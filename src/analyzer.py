@@ -577,11 +577,16 @@ class GeminiAnalyzer:
         try:
             from anthropic import Anthropic
 
-            self._anthropic_client = Anthropic(api_key=config.anthropic_api_key)
+            self._anthropic_client = Anthropic(
+                api_key=config.anthropic_api_key,
+                **({"base_url": config.anthropic_base_url} if config.anthropic_base_url else {}),
+            )
             self._current_model_name = config.anthropic_model
             self._use_anthropic = True
             logger.info(
-                f"Anthropic Claude API init OK (model: {config.anthropic_model})"
+                f"Anthropic Claude API init OK (model: {config.anthropic_model}"
+                + (f", base_url: {config.anthropic_base_url}" if config.anthropic_base_url else "")
+                + ")"
             )
         except ImportError:
             logger.error("anthropic package not installed, run: pip install anthropic")

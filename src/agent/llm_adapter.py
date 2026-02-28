@@ -142,7 +142,10 @@ class LLMToolAdapter:
         if anthropic_key and not anthropic_key.startswith("your_") and len(anthropic_key) > 10:
             try:
                 from anthropic import Anthropic
-                self._anthropic_client = Anthropic(api_key=anthropic_key)
+                client_kwargs = {"api_key": anthropic_key}
+                if config.anthropic_base_url:
+                    client_kwargs["base_url"] = config.anthropic_base_url
+                self._anthropic_client = Anthropic(**client_kwargs)
                 self._anthropic_available = True
                 logger.info("Agent LLM: Anthropic initialized")
             except Exception as e:
