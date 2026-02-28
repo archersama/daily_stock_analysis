@@ -539,7 +539,8 @@ class LLMToolAdapter:
         if tools:
             call_kwargs["tools"] = tools
 
-        response = self._anthropic_client.messages.create(**call_kwargs)
+        with self._anthropic_client.messages.stream(**call_kwargs) as stream:
+            response = stream.get_final_message()
 
         # Parse response
         tool_calls = []
